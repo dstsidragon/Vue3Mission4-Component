@@ -73,16 +73,22 @@
       <!-- Button trigger modal -->
       <p>
         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addProduct"
-          aria-expanded="false" aria-controls="addProduct">
+          aria-expanded="false" aria-controls="addProduct" @click="clearProductData">
           新增產品
         </button>
       </p>
 
 
       <!-- Modal -->
-      <add-product-modal :add-product="addProduct" @emit-product-data="addPrductData"></add-product-modal>
+      <add-product-modal  ref="UpLoadImg" :add-product="addProduct" @emit-product-data="addPrductData"></add-product-modal>
     </div>
     <!-- 新增產品 end-->
+    <button class="btn btn-primary" type="button" @click="OneKeyAddDefaultProduct">
+          一鑑輸入預設商品
+        </button>
+        <button :class="{'d-none':!this.productDataAll}" class="btn btn-danger" type="button"  @click="OneKeyDelAllProduct">
+          一鑑刪除全部商品
+        </button>
 
     <!-- 產品列表 -->
     <div class="container mt_5p ">
@@ -152,7 +158,9 @@
 
     <!-- 修改商品Modal -->
    <redit-product-modal :redi-data="rediData" @emit-redit-new-nata="reditOneData"></redit-product-modal>
+  
 
+   
     <!-- 分頁 -->
     <div class="d-flex justify-content-center">
       
