@@ -1,10 +1,30 @@
+import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.11/vue.esm-browser.js';
+import loginOut from './components/loginOut.js';
+import reditProductModal from './components/reditProductModal.js';
+import  addProductModal from './components/addProductModal.js';
+import verificationModal from './components/verificationModal.js';
+import pagination from './components/pagination.js';
 
 
-const app = Vue.createApp({
+createApp({
+    components: {
+        //modal-登出
+        loginOut,
+        //modal-編輯
+        reditProductModal,
+        //modal-新增產品
+        addProductModal,
+        //更改驗證碼
+        verificationModal,
+        //分頁
+        pagination,
+    },
     data() {
         return {
             //商品資料
             productData: [],
+            //分頁
+            pagination:[],
             // 商品資料筆數
             dataLength: 0,
             // 使用者名稱
@@ -54,7 +74,7 @@ const app = Vue.createApp({
                     url4: "https://tse2.mm.bing.net/th?id=OIP.nK8BdFb8oZMFpAFsogSOGAAAAA&pid=Api&P=0&w=300&h=300",
                     url5: "https://tse4.mm.bing.net/th?id=OIP.biQM95mT36fG4rnYO1xM1QHaLH&pid=Api&P=0&w=300&h=300",
                 },
-            }
+            },
         }
     },
     methods: {
@@ -82,9 +102,9 @@ const app = Vue.createApp({
                 )
         },
         //刪除cookie
-         deleteAllCookies() {
+        deleteAllCookies() {
             let cookies = document.cookie.split(";");
-        
+
             for (let i = 0; i < cookies.length; i++) {
                 let cookie = cookies[i];
                 let eqPos = cookie.indexOf("=");
@@ -92,23 +112,23 @@ const app = Vue.createApp({
                 document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
             }
         },
-        
+
         //判斷使用者值
         chkUserName() {
             // 如果有取到值 ，代表已登入
             if (document.cookie.replace(/(?:(?:^|.*;\s*)username\s*\=\s*([^;]*).*$)|^.*$/, "$1") !== "") {
                 this.userName = document.cookie.replace(/(?:(?:^|.*;\s*)username\s*\=\s*([^;]*).*$)|^.*$/, "$1");
                 // 登入狀態
-                this.login_status =  true;
-            }else{
+                this.login_status = true;
+            } else {
                 this.userName = "訪客";
                 // 登入狀態
-                this.login_status =  false;
+                this.login_status = false;
             }
         },
         //取得商品列表
-        getProduct() {
-            axios.get(`${api_url}/api/${api_path}/admin/products`)
+        getProduct(page=1) {
+            axios.get(`${api_url}/api/${api_path}/admin/products?page=${page}`)
                 .then(
                     res => {
                         // console.log(res);
@@ -118,7 +138,7 @@ const app = Vue.createApp({
                         if (res.data.success) {
                             this.productData = res.data.products;
                             // console.log(productData);
-
+                            this.pagination = res.data.pagination;
                             // 更新筆數
                             this.dataLength = this.productData.length;
                         } else {
@@ -196,30 +216,9 @@ const app = Vue.createApp({
         },
 
         //建立產品
-        addPrductData() {
+        addPrductData(emitproductData) {
 
-            //新增的產品資料
-            const product = {
-                data: {
-                    title: this.addProduct.bg_add_title,
-                    category: this.addProduct.bg_add_category,
-                    origin_price: parseInt(this.addProduct.bg_add_origin_price),
-                    price: parseInt(this.addProduct.bg_add_price),
-                    unit: this.addProduct.bg_add_unit,
-                    description: this.addProduct.bg_add_description,
-                    content: this.addProduct.bg_add_content,
-                    is_enabled: (this.addProduct.bg_add_is_enabled),
-                    imageUrl: this.addProduct.imageUrl,
-                    imagesUrl: [
-                        this.addProduct.imageUrls.url1,
-                        this.addProduct.imageUrls.url2,
-                        this.addProduct.imageUrls.url3,
-                        this.addProduct.imageUrls.url4,
-                        this.addProduct.imageUrls.url5,
-                    ]
-                }
-            };
-            // console.log(product);
+            // console.log(emitproductData);
             //判斷是否都不為空值
             if (this.addProduct.bg_add_title !== "" && this.addProduct.bg_add_category !== ""
                 && this.addProduct.bg_add_unit !== "" && this.addProduct.bg_add_origin_price !== ""
@@ -227,7 +226,7 @@ const app = Vue.createApp({
                 //   console.log(API_Path)
 
                 //送至伺服器
-                axios.post(`${api_url}/api/${api_path}/admin/product`, product)
+                axios.post(`${api_url}/api/${api_path}/admin/product`, emitproductData)
                     .then(
                         res => {
 
@@ -237,9 +236,11 @@ const app = Vue.createApp({
                                 // 刷新
                                 this.getProduct();
 
-                                // 關掉新增產品選單
 
-                                document.getElementById("addProduct").classList.remove("show")
+                                // 關掉新增產品選單
+                                $().ready(function () {
+                                    $(".btn-close").trigger("click");
+                                })
 
                                 // 清空資料
                                 this.addProduct.bg_add_title = "";
@@ -290,29 +291,8 @@ const app = Vue.createApp({
             this.rediData.imagesUrl.url5 = rediItem.imagesUrl[4];
         },
         //編輯商品
-        reditOneData() {
-            const reditNewData = {
-                data: {
-                    category: this.rediData.category,
-                    content: this.rediData.content,
-                    description: this.rediData.description,
-                    id: this.rediData.id,
-                    is_enabled: parseInt(this.rediData.is_enabled),
-                    origin_price: parseInt(this.rediData.origin_price),
-                    price: parseInt(this.rediData.price),
-                    title: this.rediData.title,
-                    unit: this.rediData.unit,
-                    num: 1,
-                    imageUrl: this.rediData.imageUrl,
-                    imagesUrl: [
-                        this.rediData.imagesUrl.url1,
-                        this.rediData.imagesUrl.url2,
-                        this.rediData.imagesUrl.url3,
-                        this.rediData.imagesUrl.url4,
-                        this.rediData.imagesUrl.url5
-                    ]
-                }
-            };
+        reditOneData(reditNewData) {
+
             //   console.log(reditNewData)
             //編輯資料
             axios.put(`${api_url}/api/${api_path}/admin/product/${this.rediData.id}`, reditNewData)
@@ -349,4 +329,7 @@ const app = Vue.createApp({
     },
     mounted() {
     }
-}).mount('#app');
+})
+
+
+    .mount('#app');

@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="https://cdn1.iconfinder.com/data/icons/social-networks-15/512/LinkedIn_social_network_logo-256.png">
+  <link rel="icon"
+    href="https://cdn1.iconfinder.com/data/icons/social-networks-15/512/LinkedIn_social_network_logo-256.png">
   <title>API串接|管理</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="./css/main.css">
   <link rel="stylesheet" href="./css/utily.css">
-  <script src="https://unpkg.com/vue@next"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 
@@ -41,10 +41,11 @@
           </ul>
         </li>
         <li class="nav-item">
-          <a v-if="login_status" id="chkSignOut"  class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#signOutUser">
+          <a v-if="login_status" id="chkSignOut" class="btn btn-danger" data-bs-toggle="modal"
+            data-bs-target="#signOutUser">
             登出
           </a>
-          <a v-else  id="chkSignOut"  class="btn btn-success" href="login.html">
+          <a v-else id="chkSignOut" class="btn btn-success" href="login.html">
             登入
           </a>
         </li>
@@ -56,140 +57,32 @@
 
 
     <!-- 驗證Modal -->
-    <div class="modal fade" id="verification" tabindex="-1" aria-labelledby="verificationLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="verificationLabel">輸入你的API_Path</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <label class="mr-2" for="API_Path">API_Path:</label>
-            <input id="API_Path" type="text" value="sim322on">
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">我忘記我的path碼，先饒過你</button>
-            <button id="chkVerification" @click="chkPath" type="button" class="btn btn-primary"
-              data-bs-dismiss="modal">驗證</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <verification-modal @emitchk-path="chkPath"></verification-modal>
 
 
     <!-- 登出Modal -->
-    <div class="modal fade" id="signOutUser" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-      aria-labelledby="signOutUserLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title text-center" id="signOutUserLabel">確定登出?</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">讓我想想</button>
-            <button id="signOut" type="button" @click="signOutAdmin" class="btn btn-primary"
-              data-bs-dismiss="modal">非常低肯定!</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- 新增產品 -->
+    <login-out @sign-out-admin="signOutAdmin"></login-out>
+
+
+
+
+
+
+    <!-- 新增產品 start-->
     <div class="container mt-5">
+      <!-- Button trigger modal -->
       <p>
-        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addProduct"
+        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addProduct"
           aria-expanded="false" aria-controls="addProduct">
           新增產品
         </button>
       </p>
 
-      <div class="collapse" id="addProduct">
-        <div class="card card-body row">
-          <div class="form-group mb-2">
-            <label for="bg_add_title">標題</label> 
-            <input type="text" id="bg_add_title"
-              placeholder="請輸入標題" class="form-control" required v-model="addProduct.bg_add_title"></div>
-          <div class="form-group mb-2">
-            <label for="bg_add_description">描述</label> 
-            <textarea type="text"
-              id="bg_add_description" placeholder="請輸入描述" class="form-control" v-model="addProduct.bg_add_description"></textarea></div>
-          <div class="form-group mb-2">
-            <label for="bg_add_content">說明</label> 
-            <textarea type="text" id="bg_add_content"
-              placeholder="請輸入說明" class="form-control" v-model="addProduct.bg_add_content"></textarea></div>
-          <div class="form-row d-flex flex-wrap justify-content-between mb-2">
-            <div class="form-group col-md-5">
-              <label for="bg_add_category">分類</label> 
-              <input type="text"
-                id="bg_add_category" placeholder="請輸入分類" class="form-control" v-model="addProduct.bg_add_category"></div>
-            <div class="form-group col-md-5">
-              <label for="bg_add_unit">單位</label> 
-              <input type="unit" id="bg_add_unit"
-                placeholder="請輸入單位" class="form-control" v-model="addProduct.bg_add_unit"></div>
-          </div>
-          <div class="form-row d-flex flex-wrap justify-content-between mb-2">
-            <div class="form-group col-md-5">
-              <label for="bg_add_origin_price">原價</label> 
-              <input type="number"
-                id="bg_add_origin_price" placeholder="請輸入原價" min="0" oninput="value=value.replace('-', '')"  class="form-control" v-model="addProduct.bg_add_origin_price"></div>
-            <div class="form-group col-md-5">
-              <label for="bg_add_price">售價</label> 
-              <input type="number" id="bg_add_price"
-                placeholder="請輸入售價" class="form-control" min="0" oninput="value=value.replace('-', '')" v-model="addProduct.bg_add_price"></div>
-          </div>
-          <hr class="mt-5">
-          <div class="form-group">
-            <label for="bg_add_image">輸入主圖網址</label>
-            <input type="text" id="bg_add_image" v-model="addProduct.imageUrl" placeholder="請輸入主圖連結" class="form-control mb-2">
-            <img id="bg_image" :src="addProduct.imageUrl" alt="主圖" width="250" class="img-fluid">
-          </div>
 
-          <div class="form-row d-flex flex-wrap">
-            <div item="0" class="form-group col-md-6">
-              <label for="bg_add_image1">輸入圖片網址 1 </label>
-              <input type="text" id="bg_add_image1" v-model="addProduct.imageUrls.url1" placeholder="請輸入圖片連結"
-                class="form-control mb-2">
-              <img id="bg_image1" :src="addProduct.imageUrls.url1" alt="圖片1" width="250" class="img-fluid">
-            </div>
-            <div item="1" class="form-group col-md-6">
-              <label for="bg_add_image2">輸入圖片網址 2 </label>
-              <input type="text" id="bg_add_image2" v-model="addProduct.imageUrls.url2" placeholder="請輸入圖片連結"
-                class="form-control mb-2">
-              <img id="bg_image2" :src="addProduct.imageUrls.url2" alt="圖片2" width="250" class="img-fluid">
-            </div>
-            <div item="2" class="form-group col-md-6">
-              <label for="bg_add_image3">輸入圖片網址 3 </label>
-              <input type="text" id="bg_add_image3" v-model="addProduct.imageUrls.url3" placeholder="請輸入圖片連結"
-                class="form-control mb-2">
-              <img id="bg_image3" :src="addProduct.imageUrls.url3" alt="圖片3" width="250" class="img-fluid">
-            </div>
-            <div item="3" class="form-group col-md-6">
-              <label for="bg_add_image4">輸入圖片網址 4 </label>
-              <input type="text" id="bg_add_image4" v-model="addProduct.imageUrls.url4" placeholder="請輸入圖片連結"
-                class="form-control mb-2">
-              <img id="bg_image4" :src="addProduct.imageUrls.url4" alt="圖片4" width="250" class="img-fluid">
-            </div>
-            <div item="4" class="form-group col-md-6">
-              <label for="bg_add_image5">輸入圖片網址 5 </label>
-              <input type="text" id="bg_add_image5" v-model="addProduct.imageUrls.url5" placeholder="請輸入圖片連結"
-                class="form-control mb-2">
-              <img id="bg_image5" :src="addProduct.imageUrls.url5" alt="圖片5" width="250" class="img-fluid">
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="form-check">
-              <input type="checkbox" true-value="1" false-value="0" id="bg_add_is_enabled" class="form-check-input" v-model="addProduct.bg_add_is_enabled">
-              <label for="bg_add_is_enabled" class="form-check-label">
-                是否啟用
-              </label>
-            </div>
-          </div>
-          <div class="mt-3 text-right"><button id='bg_add_send' @click="addPrductData" type="submit"
-              class="btn btn-primary">建立產品資料</button></div>
-        </div>
-
-      </div>
+      <!-- Modal -->
+      <add-product-modal :add-product="addProduct" @emit-product-data="addPrductData"></add-product-modal>
     </div>
+    <!-- 新增產品 end-->
 
     <!-- 產品列表 -->
     <div class="container mt_5p ">
@@ -214,8 +107,7 @@
             </tr>
           </thead>
           <tbody id="productList">
-            <tr v-for="(item,i) in productData" class="row"
-            :key="'bg_prd'+i">
+            <tr v-for="(item,i) in productData" class="row" :key="'bg_prd'+i">
 
               <td class="col-3 d-none d-md-table-cell d-flex align-items-center">
                 <img class="prd_img" :src="item.imageUrl" alt="">
@@ -259,118 +151,15 @@
     </div>
 
     <!-- 修改商品Modal -->
-    <div class="modal fade" id="reditModal" tabindex="-1" aria-labelledby="reditModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-big">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="reditModalLabel">修改商品</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="card card-body row">
-              <div class="form-group mb-2">
-                <label for="bg_redit_title">標題</label>
-                <input type="text" id="bg_redit_title" placeholder="請輸入標題" v-model="rediData.title" class="form-control"
-                  required>
-              </div>
-              <div class="form-group mb-2">
-                <label for="bg_redit_description">描述</label>
-                <textarea type="text" id="bg_redit_description" v-model="rediData.description" placeholder="請輸入描述"
-                  class="form-control"></textarea>
-              </div>
-              <div class="form-group mb-2">
-                <label for="bg_redit_content">說明</label>
-                <textarea type="text" id="bg_redit_content" placeholder="請輸入說明" v-model="rediData.content"
-                  class="form-control"></textarea>
-              </div>
-              <div class="form-row d-flex flex-wrap justify-content-between mb-2">
-                <div class="form-group col-md-5">
-                  <label for="bg_redit_category">分類</label>
-                  <input type="text" id="bg_redit_category" v-model="rediData.category" placeholder="請輸入分類"
-                    class="form-control">
-                </div>
-                <div class="form-group col-md-5">
-                  <label for="bg_redit_unit">單位</label>
-                  <input type="unit" id="bg_redit_unit" v-model="rediData.unit" placeholder="請輸入單位"
-                    class="form-control">
-                </div>
-              </div>
-              <div class="form-row d-flex flex-wrap justify-content-between mb-2">
-                <div class="form-group col-md-5">
-                  <label for="bg_redit_origin_price">原價</label>
-                  <input type="number" id="bg_redit_origin_price" min="0"  oninput="value=value.replace('-', '')" v-model="rediData.origin_price" placeholder="請輸入原價"
-                    class="form-control">
-                </div>
-                <div class="form-group col-md-5">
-                  <label for="bg_redit_price">售價</label>
-                  <input type="number" id="bg_redit_price" min="0" oninput="value=value.replace('-', '')" v-model="rediData.price" placeholder="請輸入售價"
-                    class="form-control">
-                </div>
-              </div>
-              <hr class="mt-5">
-              <div class="form-group">
-                <label for="bg_redit_image">輸入主圖網址</label>
-                <input type="text" id="bg_redit_image" v-model="rediData.imageUrl" placeholder="請輸入主圖連結"
-                  class="form-control mb-2">
-                <img id="bg_image" :src="rediData.imageUrl" alt="主圖" width="250" class="img-fluid">
-              </div>
+   <redit-product-modal :redi-data="rediData" @emit-redit-new-nata="reditOneData"></redit-product-modal>
 
-              <div class="form-row d-flex flex-wrap">
-                <div item="0" class="form-group col-md-6">
-                  <label for="bg_redit_image1">輸入圖片網址 1 </label>
-                  <input type="text" id="bg_redit_image1" v-model="rediData.imagesUrl.url1" placeholder="請輸入圖片連結"
-                    class="form-control mb-2">
-                  <img id="bg_image1" :src="rediData.imagesUrl.url1" alt="圖片1" width="250" class="img-fluid">
-                </div>
-                <div item="1" class="form-group col-md-6">
-                  <label for="bg_redit_image2">輸入圖片網址 2 </label>
-                  <input type="text" id="bg_redit_image2" v-model="rediData.imagesUrl.url2" placeholder="請輸入圖片連結"
-                    class="form-control mb-2">
-                  <img id="bg_image2" :src="rediData.imagesUrl.url2" alt="圖片2" width="250" class="img-fluid">
-                </div>
-                <div item="2" class="form-group col-md-6">
-                  <label for="bg_redit_image3">輸入圖片網址 3 </label>
-                  <input type="text" id="bg_redit_image3" v-model="rediData.imagesUrl.url3" placeholder="請輸入圖片連結"
-                    class="form-control mb-2">
-                  <img id="bg_image3" :src="rediData.imagesUrl.url3" alt="圖片3" width="250" class="img-fluid">
-                </div>
-                <div item="3" class="form-group col-md-6">
-                  <label for="bg_redit_image4">輸入圖片網址 4 </label>
-                  <input type="text" id="bg_redit_image4" v-model="rediData.imagesUrl.url4" placeholder="請輸入圖片連結"
-                    class="form-control mb-2">
-                  <img id="bg_image4" :src="rediData.imagesUrl.url4" alt="圖片4" width="250" class="img-fluid">
-                </div>
-                <div item="4" class="form-group col-md-6">
-                  <label for="bg_redit_image5">輸入圖片網址 5 </label>
-                  <input type="text" id="bg_redit_image5" v-model="rediData.imagesUrl.url5" placeholder="請輸入圖片連結"
-                    class="form-control mb-2">
-                  <img id="bg_image5" :src="rediData.imagesUrl.url5" alt="圖片5" width="250" class="img-fluid">
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="form-check">
-                  <input type="checkbox" v-model="rediData.is_enabled" v-if="rediData.is_enabled" checked true-value="1"
-                    false-value="0" id="bg_redit_is_enabled" class="form-check-input">
-                  <input type="checkbox" v-model="rediData.is_enabled" v-else true-value="1" false-value="0"
-                    id="bg_redit_is_enabled" class="form-check-input">
-                  <label for="bg_redit_is_enabled" class="form-check-label">
-                    是否啟用
-                  </label>
-                </div>
-              </div>
-
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" id="btn_redit_cance" class="btn btn-secondary" data-bs-dismiss="modal">取消修改</button>
-            <button type="button" class="btn btn-primary" @click="reditOneData">儲存修改</button>
-          </div>
-        </div>
-      </div>
+    <!-- 分頁 -->
+    <div class="d-flex justify-content-center">
+      
+    <pagination :pagination="pagination" @get-product="getProduct"></pagination>
     </div>
 
   </div>
-
 
 
 
@@ -385,7 +174,7 @@
     integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
     crossorigin="anonymous"></script>
   <script src="./js/api.js"></script>
-  <script src="./js/background.js"></script>
+  <script src="./js/background.js" type="module"></script>
 </body>
 
 </html>

@@ -1,8 +1,20 @@
-const app = Vue.createApp({
+import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.11/vue.esm-browser.js';
+import loginOut from './components/loginOut.js';
+import pagination from './components/pagination.js';
+
+createApp({
+    components:{
+        //modal-登出
+        loginOut,
+        //分頁
+        pagination,
+    },
     data() {
         return {
             //產品資料
             productData: [],
+            //分頁
+            pagination:[],
             // 使用者名稱
             userName: "訪客",
             //登入/登出鈕
@@ -62,15 +74,15 @@ const app = Vue.createApp({
             }
         },
         //取得商品列表
-        getProduct() {
-            axios.get(`${api_url}/api/${api_path}/products`)
+        getProduct(page=1) {
+            axios.get(`${api_url}/api/${api_path}/products?page=${page}`)
                 .then(
                     res => {
                         // console.log(res);
                         //如果成功就執行
                         if (res.data.success) {
                             this.productData = res.data.products;
-
+                            this.pagination = res.data.pagination;
                             //將資料筆數更新
                             this.dataLength = this.productData.length;
                         } else {
@@ -100,4 +112,6 @@ const app = Vue.createApp({
         // 取得商品
         this.getProduct();
     }
-}).mount("#app");
+})
+
+.mount("#app");
