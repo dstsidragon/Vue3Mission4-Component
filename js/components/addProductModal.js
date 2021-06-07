@@ -122,6 +122,7 @@ export default {
           ]
         }
       };
+      console.log(typeof this.addProduct.bg_add_is_enabled)
       this.$emit("emit-product-data", product);
     }
   }
